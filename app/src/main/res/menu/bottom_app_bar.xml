@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/miHome"
+        android:icon="@drawable/ic_kalender"
+        android:title="Calendar" />
+
+    <item
+        android:id="@+id/miSearch"
+        android:title="" />
+
+    <item
+        android:id="@+id/miSettings"
+        android:icon="@drawable/ic_search"
+        android:title="Search Diary" />
+</menu>

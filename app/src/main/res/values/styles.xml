@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="Widget.Theme.MyDiary.MyView" parent="">
+        <item name="android:background">@color/merahmudaJurna</item>
+        <item name="exampleColor">@color/light_blue_400</item>
+    </style>
+</resources>
