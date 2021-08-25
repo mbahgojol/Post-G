@@ -16,6 +16,7 @@ import com.blank.mydiary.api.ResultState
 import com.blank.mydiary.data.Jurnal
 import com.blank.mydiary.data.MyJurnal
 import com.blank.mydiary.databinding.ActivityHomeBinding
+import com.blank.mydiary.service.AlarmReceiver
 import com.blank.mydiary.ui.create.CreateJurnalActivity
 import com.blank.mydiary.ui.edit.EditActivity
 import com.blank.mydiary.ui.search.SearchActivity
@@ -37,6 +38,10 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val alarmReceiver = AlarmReceiver()
+        if (!alarmReceiver.isAlarmOn(this))
+            alarmReceiver.setRepeatingAlarm(this)
 
         val date = Date()
         binding.content.tvToday.text = formatter.format(date)

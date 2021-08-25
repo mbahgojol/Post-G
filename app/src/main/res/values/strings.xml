@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_msg">End each day with a grateful heart. Use this field to express your thoughts or feelings. You can also add voice and change background by click on menu below...</string>
     <string name="no_journal_for_this_day">No journal for this day</string>
+    <string name="reminder_title_notif">Post-G</string>
+    <string name="reminder_msg_notif">How\'s Your Day?? Don\'t Forget to be Grateful for Today☺️</string>
 </resources>
