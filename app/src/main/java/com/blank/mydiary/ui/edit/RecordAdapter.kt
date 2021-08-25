@@ -38,6 +38,12 @@ class RecordAdapter(
         notifyDataSetChanged()
     }
 
+    private fun deleteRecord(index: Int) {
+        this.data.removeAt(index)
+        notifyItemRemoved(index)
+        notifyItemRangeChanged(index, data.size)
+    }
+
     fun getData() = data
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder =
@@ -67,11 +73,16 @@ class RecordAdapter(
 
         fun onBind(fileName: String, position: Int) {
             this.fileName = fileName
+            v.tvTitleAudio.text = "Audio ${position.plus(1)}"
 
             if (online) {
                 v.endTime.text = getDuration(fileName)
             } else {
                 v.endTime.text = getDuration(File(fileName))
+            }
+
+            v.btnCloseAudio.setOnClickListener {
+                deleteRecord(position)
             }
 
             v.play.setOnClickListener {

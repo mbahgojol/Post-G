@@ -9,6 +9,7 @@ import com.google.firebase.firestore.ktx.toObjects
 
 class HomeViewModel : ViewModel() {
     val resultStateJurnal = MutableLiveData<ResultState>()
+    val resultStateDeleteJurnal = MutableLiveData<ResultState>()
 
     fun getJurnal(deviceId: String) {
         resultStateJurnal.value = ResultState.Loading(true)
@@ -30,5 +31,14 @@ class HomeViewModel : ViewModel() {
                 }
             }
 
+    }
+
+    fun deleteJurnal(jurnal: Jurnal) {
+        FirebaseService.deleteData(jurnal)
+            .addOnFailureListener {
+                resultStateDeleteJurnal.value = ResultState.Error(it)
+            }.addOnSuccessListener {
+                resultStateDeleteJurnal.value = ResultState.Success(it)
+            }
     }
 }

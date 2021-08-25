@@ -22,5 +22,8 @@
         <argument
             android:name="feeling"
             app:argType="integer" />
+        <argument
+            android:name="date"
+            app:argType="string" />
     </fragment>
 </navigation>

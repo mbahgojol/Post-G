@@ -42,6 +42,7 @@ class TitleFragment : Fragment() {
             Intent(requireActivity(), EditActivity::class.java).apply {
                 putExtra("feeling", args.feeling)
                 putExtra("title", binding.etTitle.text.toString())
+                putExtra("date", args.date)
                 startActivity(this)
                 requireActivity().finish()
             }

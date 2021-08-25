@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/miHome"
+        android:id="@+id/icalendar"
         android:icon="@drawable/ic_kalender"
         android:title="Calendar" />
 
@@ -11,7 +11,7 @@
         android:title="" />
 
     <item
-        android:id="@+id/miSettings"
+        android:id="@+id/isearch"
         android:icon="@drawable/ic_search"
         android:title="Search Diary" />
 </menu>

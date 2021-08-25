@@ -1,19 +1,20 @@
 package com.blank.mydiary.api
 
 import android.net.Uri
+import com.blank.mydiary.data.Jurnal
 import com.blank.mydiary.data.SendJurnal
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import java.io.File
 import java.io.FileInputStream
+import java.util.*
 
 object FirebaseService {
     private val storage = FirebaseStorage.getInstance()
-    val storageRef = storage.reference
+    private val storageRef = storage.reference
     private fun dbFb() = Firebase.firestore
     var fileName = ""
 
@@ -27,9 +28,16 @@ object FirebaseService {
     fun getAudio(fileName: String): Task<Uri> = storageRef.child(fileName)
         .downloadUrl
 
-    fun saveText(jurnal: SendJurnal): Task<DocumentReference> =
+    fun saveText(jurnal: SendJurnal): Task<Void> {
+        return dbFb().collection(jurnal.data["deviceId"].toString())
+            .document(jurnal.data["jurnalId"].toString())
+            .set(jurnal.data)
+    }
+
+    fun deleteData(jurnal: Jurnal): Task<Void> =
         dbFb().collection(jurnal.deviceId)
-            .add(jurnal.data)
+            .document(jurnal.jurnalId)
+            .delete()
 
     fun getText(deviceId: String) = dbFb()
         .collection(deviceId)

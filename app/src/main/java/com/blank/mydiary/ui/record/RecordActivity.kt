@@ -106,11 +106,10 @@ class RecordActivity : AppCompatActivity() {
 
             try {
                 prepare()
+                start()
             } catch (e: IOException) {
                 Log.e(LOG_TAG, "prepare() failed")
             }
-
-            start()
         }
     }
 

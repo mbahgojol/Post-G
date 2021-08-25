@@ -71,7 +71,6 @@ class EditViewModel : BaseViewModel() {
     }
 
     fun getAudio(dataAudio: MutableList<String>) {
-        resultStatusGetAudio.value = ResultState.Loading(true)
         var totalSend = 0
         Observable.create<Uri> { emitter ->
             dataAudio.forEach { filePath ->
@@ -87,6 +86,9 @@ class EditViewModel : BaseViewModel() {
                     }
             }
         }.observableIo()
+            .doOnSubscribe {
+                resultStatusGetAudio.value = ResultState.Loading(true)
+            }
             .map {
                 it.toString()
             }

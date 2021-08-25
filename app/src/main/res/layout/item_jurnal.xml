@@ -1,64 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@android:color/transparent"
-    app:cardElevation="10dp">
+    android:background="@android:color/transparent"
+    app:dragEdge="right"
+    app:mode="same_level">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/delete_layout"
+        android:layout_width="80dp"
+        android:layout_height="fill_parent"
+        android:background="#E44646">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="delete"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/front_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_jurnal">
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
 
-        <View
-            android:id="@+id/bgview1"
-            android:layout_width="10dp"
-            android:layout_height="0dp"
-            android:background="@drawable/bg_radius_left"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvStatusFeeling"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bgColor"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="8dp"
-            android:text="Loved"
-            android:textColor="@color/unguJurna"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@id/bgview1"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@drawable/bg_jurnal">
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="20dp"
-            android:text="Bermain PS bersama Teman
+            <View
+                android:id="@+id/bgview1"
+                android:layout_width="10dp"
+                android:layout_height="0dp"
+                android:background="@drawable/bg_radius_left"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvStatusFeeling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="8dp"
+                android:text="Loved"
+                android:textColor="@color/unguJurna"
+                android:textSize="12sp"
+                app:layout_constraintStart_toEndOf="@id/bgview1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="20dp"
+                android:text="Bermain PS bersama Teman
 Sambil Makan Pisang Goreng"
-            android:textColor="@color/unguJurna"
-            app:layout_constraintEnd_toStartOf="@id/ivFeeling"
-            app:layout_constraintStart_toEndOf="@id/bgview1"
-            app:layout_constraintTop_toBottomOf="@id/tvStatusFeeling" />
+                android:textColor="@color/unguJurna"
+                app:layout_constraintEnd_toStartOf="@id/ivFeeling"
+                app:layout_constraintStart_toEndOf="@id/bgview1"
+                app:layout_constraintTop_toBottomOf="@id/tvStatusFeeling" />
 
-        <ImageView
-            android:id="@+id/ivFeeling"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/bg_radius_8"
-            android:padding="10dp"
-            android:src="@drawable/face_with_steam_from_nose"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/ivFeeling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_radius_8"
+                android:padding="10dp"
+                android:src="@drawable/face_with_steam_from_nose"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

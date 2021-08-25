@@ -2,9 +2,11 @@ package com.blank.mydiary.ui.edit
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -13,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blank.mydiary.R
 import com.blank.mydiary.api.ResultState
 import com.blank.mydiary.data.MyJurnal
 import com.blank.mydiary.data.SendJurnal
@@ -28,12 +31,13 @@ import java.util.*
 import kotlin.collections.HashMap
 
 
-class EditActivity : AppCompatActivity() {
+class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     private var fileName = MutableLiveData("")
     private lateinit var binding: ActivityEditBinding
     private val viewModel by viewModels<EditViewModel>()
     private var adapter: RecordAdapter? = null
+    private var bgcolor = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,7 @@ class EditActivity : AppCompatActivity() {
 
         val android_id = getDeviceId()
         val title = intent.getStringExtra("title") ?: ""
+        val myDate = intent.getStringExtra("date") ?: ""
         var feeling = intent.getIntExtra("feeling", 0)
 
         fileName.observe(this) {
@@ -52,9 +57,6 @@ class EditActivity : AppCompatActivity() {
                 adapter?.addData(it)
             }
         }
-
-        val formatter = SimpleDateFormat("EEE, dd MMM yyyy")
-        val date = Date()
 
         binding.etMsg.requestFocus()
         val emotes = listOf(
@@ -82,12 +84,13 @@ class EditActivity : AppCompatActivity() {
             binding.etMsg.setText(jurnal.msg)
             emotes[jurnal.feeling].select()
             binding.date.text = jurnal.date
-            viewModel.getAudio(jurnal.fileName)
+            if (jurnal.fileName.isNotEmpty())
+                viewModel.getAudio(jurnal.fileName)
         } else {
             adapter = RecordAdapter(this, binding.layoutAudio, false)
             binding.layoutAudio.adapter = adapter
 
-            binding.date.text = formatter.format(date)
+            binding.date.text = myDate
             emotes[feeling].select()
             binding.tvTitle.setText(title)
         }
@@ -119,8 +122,10 @@ class EditActivity : AppCompatActivity() {
                     put("msg", binding.etMsg.text.toString())
                     put("title", binding.tvTitle.text.toString())
                     put("feeling", feeling)
-                    put("date", formatter.format(date))
-                    put("background", "")
+                    put("date", binding.date.text.toString())
+                    put("background", bgcolor)
+                    put("jurnalId", UUID.randomUUID().toString())
+                    put("deviceId", android_id)
                 }
             )
             viewModel.saveJurnal(jurnal)
@@ -155,6 +160,40 @@ class EditActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.date.setOnClickListener {
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
+
+            DatePickerDialog(this, this, year, month, day)
+                .show()
+        }
+
+        binding.bgColor.setOnClickListener {
+            val colorPickerBottomSheet = ColorPickerBottomSheet()
+            colorPickerBottomSheet.show(supportFragmentManager, "")
+            colorPickerBottomSheet.setClickListener { color ->
+                val colors = mutableListOf(
+                    R.color.white,
+                    R.color.biruJurnal,
+                    R.color.kuningJurnal,
+                    R.color.pinkJurnal
+                )
+                bgcolor = color
+
+//                mutableListOf(
+//                    binding.viewContent,
+//                    binding.btnCancel,
+//                    binding.btnSave,
+//                    binding.btnRecord,
+//                    binding.bgColor
+//                ).forEach {
+//                    it.backgroundTintList = ContextCompat.getColorStateList(this, colors[color])
+//                }
+            }
+        }
     }
 
     private val resultLauncher =
@@ -176,4 +215,13 @@ class EditActivity : AppCompatActivity() {
 
             }
         }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        val mCalendar = Calendar.getInstance()
+        mCalendar[Calendar.YEAR] = year
+        mCalendar[Calendar.MONTH] = month
+        mCalendar[Calendar.DAY_OF_MONTH] = dayOfMonth
+        val formatter = SimpleDateFormat("EEE, dd MMM yyyy")
+        binding.date.text = formatter.format(mCalendar.time)
+    }
 }

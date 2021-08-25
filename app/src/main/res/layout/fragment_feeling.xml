@@ -39,6 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/title">
 
         <ImageView
+            android:id="@+id/btnIconCalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_nocolor_left_rounded"
