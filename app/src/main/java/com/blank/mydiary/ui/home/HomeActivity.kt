@@ -4,7 +4,9 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import android.widget.DatePicker
+import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +18,6 @@ import com.blank.mydiary.api.ResultState
 import com.blank.mydiary.data.Jurnal
 import com.blank.mydiary.data.MyJurnal
 import com.blank.mydiary.databinding.ActivityHomeBinding
-import com.blank.mydiary.service.AlarmReceiver
 import com.blank.mydiary.ui.create.CreateJurnalActivity
 import com.blank.mydiary.ui.edit.EditActivity
 import com.blank.mydiary.ui.search.SearchActivity
@@ -39,9 +40,22 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val alarmReceiver = AlarmReceiver()
-        if (!alarmReceiver.isAlarmOn(this))
-            alarmReceiver.setRepeatingAlarm(this)
+        if (intent.hasExtra("notif")) {
+            binding.content.notif.setImageResource(R.drawable.ic_notif_badged)
+            binding.content.notif.setOnClickListener {
+                val popup = PopupWindow(this)
+                val layout = layoutInflater.inflate(R.layout.notif_popup_layout, null)
+                popup.contentView = layout
+                popup.height = WindowManager.LayoutParams.WRAP_CONTENT
+                popup.width = WindowManager.LayoutParams.WRAP_CONTENT
+                popup.isOutsideTouchable = true
+                popup.isFocusable = true
+                popup.setBackgroundDrawable(null)
+                popup.showAsDropDown(binding.content.notif)
+            }
+        } else {
+            binding.content.notif.setImageResource(R.drawable.ic_notif)
+        }
 
         val date = Date()
         binding.content.tvToday.text = formatter.format(date)

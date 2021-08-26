@@ -36,8 +36,8 @@ class AlarmReceiver : BroadcastReceiver() {
         val calendar = Calendar.getInstance()
             .apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, 23)
-                set(Calendar.MINUTE, 44)
+                set(Calendar.HOUR_OF_DAY, 20)
+                set(Calendar.MINUTE, 0)
                 set(Calendar.SECOND, 0)
             }
 
@@ -104,6 +104,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val notificationIntent = Intent(context, HomeActivity::class.java)
         notificationIntent.flags = (Intent.FLAG_ACTIVITY_CLEAR_TOP
                 or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        notificationIntent.putExtra("notif", true)
         val intent = PendingIntent.getActivity(
             context, 0,
             notificationIntent, 0
