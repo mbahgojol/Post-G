@@ -2,11 +2,13 @@ package com.blank.mydiary.ui.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.blank.mydiary.R
 import com.blank.mydiary.data.Jurnal
 import com.blank.mydiary.databinding.ItemJurnalBinding
 import com.blank.mydiary.databinding.NoJurnalLayoutBinding
+import com.blank.mydiary.utils.getColorSave
 import com.blank.mydiary.utils.getFeeling
 import com.blank.mydiary.utils.getFeelingStatus
 import com.chauthai.swipereveallayout.ViewBinderHelper
@@ -94,6 +96,13 @@ class HomeAdapter(private val data: MutableList<Jurnal>) :
 
 class HomeViewHolder(val v: ItemJurnalBinding) : RecyclerView.ViewHolder(v.root) {
     fun bind(jurnal: Jurnal) {
+        v.bgColor.setBackgroundColor(
+            ContextCompat.getColor(
+                v.root.context,
+                if (jurnal.background == 0) R.color.merahmudaJurna else
+                    getColorSave(jurnal.background)
+            )
+        )
         v.ivFeeling.getFeeling(jurnal.feeling ?: 0)
         v.tvTitle.text = jurnal.title
         v.tvStatusFeeling.getFeelingStatus(jurnal.feeling ?: 0)

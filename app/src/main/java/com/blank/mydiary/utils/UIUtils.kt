@@ -102,3 +102,13 @@ fun formateMilliSeccond(milliseconds: Long): String {
     finalTimerString = "$finalTimerString$minutes:$secondsString"
     return finalTimerString
 }
+
+fun getColorSave(id: Int): Int {
+    val colors = mutableListOf(
+        R.color.white,
+        R.color.biruJurnal,
+        R.color.kuningJurnal,
+        R.color.pinkJurnal
+    )
+    return colors[id]
+}

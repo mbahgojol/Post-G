@@ -48,7 +48,7 @@
             android:id="@+id/bgColor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_jurnal">
+            android:background="@color/merahmudaJurna">
 
             <View
                 android:id="@+id/bgview1"

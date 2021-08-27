@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blank.mydiary.R
 import com.blank.mydiary.api.ResultState
 import com.blank.mydiary.data.MyJurnal
 import com.blank.mydiary.data.SendJurnal
@@ -25,6 +24,7 @@ import com.blank.mydiary.ui.create.unselect
 import com.blank.mydiary.ui.record.RecordActivity
 import com.blank.mydiary.utils.VerticalSpaceVersi2
 import com.blank.mydiary.utils.dp
+import com.blank.mydiary.utils.getColorSave
 import com.blank.mydiary.utils.getDeviceId
 import java.text.SimpleDateFormat
 import java.util.*
@@ -84,6 +84,12 @@ class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             binding.etMsg.setText(jurnal.msg)
             emotes[jurnal.feeling].select()
             binding.date.text = jurnal.date
+            binding.bg.setBackgroundColor(
+                ContextCompat.getColor(
+                    this,
+                    getColorSave(jurnal.background)
+                )
+            )
             if (jurnal.fileName.isNotEmpty())
                 viewModel.getAudio(jurnal.fileName)
         } else {
@@ -175,23 +181,8 @@ class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             val colorPickerBottomSheet = ColorPickerBottomSheet()
             colorPickerBottomSheet.show(supportFragmentManager, "")
             colorPickerBottomSheet.setClickListener { color ->
-                val colors = mutableListOf(
-                    R.color.white,
-                    R.color.biruJurnal,
-                    R.color.kuningJurnal,
-                    R.color.pinkJurnal
-                )
                 bgcolor = color
-
-//                mutableListOf(
-//                    binding.viewContent,
-//                    binding.btnCancel,
-//                    binding.btnSave,
-//                    binding.btnRecord,
-//                    binding.bgColor
-//                ).forEach {
-//                    it.backgroundTintList = ContextCompat.getColorStateList(this, colors[color])
-//                }
+                binding.bg.setBackgroundColor(ContextCompat.getColor(this, getColorSave(bgcolor)))
             }
         }
     }

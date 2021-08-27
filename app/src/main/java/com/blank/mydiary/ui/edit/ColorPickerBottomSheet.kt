@@ -78,14 +78,6 @@ class ColorPickerBottomSheet : BottomSheetDialogFragment() {
             }
             holder.itemView.setOnClickListener {
                 onClickColor(position)
-                /*
-                * when (position) {
-                        0 -> "#ffffff"
-                        1 -> "#BAE9F8"
-                        2 -> "#F8F6BA"
-                        else -> "#F8BAC9"
-                    }
-                * */
             }
         }
 
