@@ -95,6 +95,7 @@ class SearchActivity : AppCompatActivity() {
                                 jun.fileName,
                                 jun.msg,
                                 jun.title,
+                                jun.jurnalId
                             )
                             Intent(this, EditActivity::class.java).apply {
                                 putExtra("jurnal", jurnal)

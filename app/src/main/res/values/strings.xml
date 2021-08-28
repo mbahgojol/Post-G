@@ -7,4 +7,6 @@
     <string name="no_journal_for_this_day">No journal for this day</string>
     <string name="reminder_title_notif">Post-G</string>
     <string name="reminder_msg_notif">How\'s Your Day?? Don\'t Forget to be Grateful for Today☺️</string>
+    <string name="msg_notif">How\'s Your Day?? Don\'t Forget to be Grateful for Today☺️</string>
+    <string name="welcome_home">Hi, Welcome to Post-G</string>
 </resources>

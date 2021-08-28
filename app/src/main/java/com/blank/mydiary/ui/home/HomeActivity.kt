@@ -40,21 +40,16 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (intent.hasExtra("notif")) {
-            binding.content.notif.setImageResource(R.drawable.ic_notif_badged)
-            binding.content.notif.setOnClickListener {
-                val popup = PopupWindow(this)
-                val layout = layoutInflater.inflate(R.layout.notif_popup_layout, null)
-                popup.contentView = layout
-                popup.height = WindowManager.LayoutParams.WRAP_CONTENT
-                popup.width = WindowManager.LayoutParams.WRAP_CONTENT
-                popup.isOutsideTouchable = true
-                popup.isFocusable = true
-                popup.setBackgroundDrawable(null)
-                popup.showAsDropDown(binding.content.notif)
-            }
-        } else {
-            binding.content.notif.setImageResource(R.drawable.ic_notif)
+        binding.content.notif.setOnClickListener {
+            val popup = PopupWindow(this)
+            val layout = layoutInflater.inflate(R.layout.notif_popup_layout, null)
+            popup.contentView = layout
+            popup.height = WindowManager.LayoutParams.WRAP_CONTENT
+            popup.width = WindowManager.LayoutParams.WRAP_CONTENT
+            popup.isOutsideTouchable = true
+            popup.isFocusable = true
+            popup.setBackgroundDrawable(null)
+            popup.showAsDropDown(binding.content.notif)
         }
 
         val date = Date()
@@ -163,6 +158,7 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                             it.fileName,
                             it.msg,
                             it.title,
+                            it.jurnalId
                         )
                         Intent(this, EditActivity::class.java).apply {
                             putExtra("jurnal", jurnal)

@@ -91,7 +91,6 @@
                 android:paddingTop="16dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="16dp"
-                android:textColorHint="@color/merahmudaJurna"
                 android:textSize="12dp" />
 
         </LinearLayout>

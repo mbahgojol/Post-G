@@ -15,6 +15,7 @@ class SearchViewModel : ViewModel() {
         resultStateSearch.value = ResultState.Loading(true)
         FirebaseService.getText(deviceId)
             .whereGreaterThanOrEqualTo("title", text)
+            .whereLessThan("title", text.plus('z'))
             .get()
             .addOnSuccessListener {
                 resultStateSearch.value = ResultState.Success(it)

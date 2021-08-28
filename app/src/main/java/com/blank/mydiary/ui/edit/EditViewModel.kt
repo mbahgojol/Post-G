@@ -25,31 +25,55 @@ class EditViewModel : BaseViewModel() {
         }
     }
 
+    fun editJurnal(jurnal: SendJurnal) {
+        resultStatusSaveJurnal.value = ResultState.Loading(true)
+        val dataAudio = jurnal.data["fileName"] as MutableList<String>
+
+        if (dataAudio.size == 0) {
+            editText(jurnal)
+        } else {
+            saveAudio(jurnal, dataAudio)
+        }
+    }
+
     private fun saveAudio(jurnal: SendJurnal, dataAudio: MutableList<String>) {
         var totalSend = 0
+        var isEdit = false
         Observable.create<String> { emitter ->
             dataAudio.forEach { filePath ->
-                FirebaseService.saveAudio(File(filePath))
-                    .addOnFailureListener {
-                        emitter.onError(it)
-                    }.addOnSuccessListener {
-                        totalSend++
-                        val path = it.metadata?.path.toString()
-                        emitter.onNext(path)
+                if (filePath.contains("record")) {
+                    isEdit = true
+                    totalSend++
+                    emitter.onNext(filePath)
 
-                        Log.e("totalSend", totalSend.toString())
-                        Log.e("PathMetadata", path)
+                    if (totalSend == dataAudio.size)
+                        emitter.onComplete()
+                } else {
+                    FirebaseService.saveAudio(File(filePath))
+                        .addOnFailureListener {
+                            emitter.onError(it)
+                        }.addOnSuccessListener {
+                            totalSend++
+                            val path = it.metadata?.path.toString()
+                            emitter.onNext(path)
 
-                        if (totalSend == dataAudio.size)
-                            emitter.onComplete()
-                    }
+                            Log.e("PathMetadata", path)
+
+                            if (totalSend == dataAudio.size)
+                                emitter.onComplete()
+                        }
+                }
             }
         }.observableIo()
             .toList()
             .subscribe({
                 Log.e("Path", it.toString())
                 jurnal.data["fileName"] = it
-                saveText(jurnal)
+                if (isEdit) {
+                    editText(jurnal)
+                } else {
+                    saveText(jurnal)
+                }
             }, {
                 Log.e("Recording", it.message.toString())
                 resultStatusSaveJurnal.value = ResultState.Error(it)
@@ -60,6 +84,18 @@ class EditViewModel : BaseViewModel() {
 
     private fun saveText(jurnal: SendJurnal) {
         FirebaseService.saveText(jurnal)
+            .addOnFailureListener {
+                it.printStackTrace()
+                resultStatusSaveJurnal.value = ResultState.Error(it)
+                resultStatusSaveJurnal.value = ResultState.Loading(false)
+            }.addOnSuccessListener {
+                resultStatusSaveJurnal.value = ResultState.Success(it)
+                resultStatusSaveJurnal.value = ResultState.Loading(false)
+            }
+    }
+
+    private fun editText(jurnal: SendJurnal) {
+        FirebaseService.editText(jurnal)
             .addOnFailureListener {
                 it.printStackTrace()
                 resultStatusSaveJurnal.value = ResultState.Error(it)

@@ -10,5 +10,6 @@ data class MyJurnal(
     val feeling: Int = 1,
     val fileName: MutableList<String> = mutableListOf(),
     val msg: String = "",
-    val title: String = ""
+    val title: String = "",
+    val jurnalId: String = ""
 ) : Parcelable

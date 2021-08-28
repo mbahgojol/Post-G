@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,6 +39,8 @@ class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private val viewModel by viewModels<EditViewModel>()
     private var adapter: RecordAdapter? = null
     private var bgcolor = 0
+    private var isEdit = false
+    private var myJurnal: MyJurnal? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,10 @@ class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         fileName.observe(this) {
             if (it != "") {
                 adapter?.addData(it)
+
+                if (isEdit) {
+                    myJurnal?.fileName?.add(it)
+                }
             }
         }
 
@@ -76,23 +83,41 @@ class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         }
 
         if (intent.hasExtra("jurnal")) {
+            isEdit = true
             adapter = RecordAdapter(this, binding.layoutAudio, true)
             binding.layoutAudio.adapter = adapter
+            adapter?.listenerDelete { posisi, file ->
+                if (isEdit) {
+                    run stop@{
+                        myJurnal?.fileName?.forEachIndexed { index, s ->
+                            if (file.contains(Regex("^.*(${s.split("/")[1]}).*$"))) {
+                                myJurnal?.fileName?.removeAt(index)
+                                return@stop
+                            }
+                        }
+                    }
+                }
+            }
 
-            val jurnal = intent.getParcelableExtra<MyJurnal>("jurnal")!!
-            binding.tvTitle.setText(jurnal.title)
-            binding.etMsg.setText(jurnal.msg)
-            emotes[jurnal.feeling].select()
-            binding.date.text = jurnal.date
+            myJurnal = intent.getParcelableExtra("jurnal") ?: MyJurnal()
+            Log.e("MyJurnal", myJurnal.toString())
+
+            binding.tvTitle.setText(myJurnal?.title)
+            binding.etMsg.setText(myJurnal?.msg)
+            feeling = myJurnal?.feeling ?: 1
+            emotes[feeling].select()
+            binding.date.text = myJurnal?.date
+            bgcolor = myJurnal?.background ?: 0
             binding.bg.setBackgroundColor(
                 ContextCompat.getColor(
                     this,
-                    getColorSave(jurnal.background)
+                    getColorSave(bgcolor)
                 )
             )
-            if (jurnal.fileName.isNotEmpty())
-                viewModel.getAudio(jurnal.fileName)
+            if (myJurnal?.fileName?.isNotEmpty() == true)
+                viewModel.getAudio(myJurnal?.fileName ?: mutableListOf())
         } else {
+            isEdit = false
             adapter = RecordAdapter(this, binding.layoutAudio, false)
             binding.layoutAudio.adapter = adapter
 
@@ -100,6 +125,7 @@ class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             emotes[feeling].select()
             binding.tvTitle.setText(title)
         }
+
         binding.btnRecord.setOnClickListener {
             when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(
@@ -121,20 +147,37 @@ class EditActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         }
 
         binding.btnSave.setOnClickListener {
-            val jurnal = SendJurnal(
-                android_id,
-                HashMap<String, Any>().apply {
-                    adapter?.getData()?.let { it1 -> put("fileName", it1) }
-                    put("msg", binding.etMsg.text.toString())
-                    put("title", binding.tvTitle.text.toString())
-                    put("feeling", feeling)
-                    put("date", binding.date.text.toString())
-                    put("background", bgcolor)
-                    put("jurnalId", UUID.randomUUID().toString())
-                    put("deviceId", android_id)
-                }
-            )
-            viewModel.saveJurnal(jurnal)
+            if (isEdit) {
+                val jurnal = SendJurnal(
+                    android_id,
+                    HashMap<String, Any>().apply {
+                        put("fileName", myJurnal?.fileName ?: mutableListOf<String>())
+                        put("msg", binding.etMsg.text.toString())
+                        put("title", binding.tvTitle.text.toString())
+                        put("feeling", feeling)
+                        put("date", binding.date.text.toString())
+                        put("background", bgcolor)
+                        put("jurnalId", myJurnal?.jurnalId ?: UUID.randomUUID().toString())
+                        put("deviceId", android_id)
+                    }
+                )
+                viewModel.editJurnal(jurnal)
+            } else {
+                val jurnal = SendJurnal(
+                    android_id,
+                    HashMap<String, Any>().apply {
+                        adapter?.getData()?.let { it1 -> put("fileName", it1) }
+                        put("msg", binding.etMsg.text.toString())
+                        put("title", binding.tvTitle.text.toString())
+                        put("feeling", feeling)
+                        put("date", binding.date.text.toString())
+                        put("background", bgcolor)
+                        put("jurnalId", UUID.randomUUID().toString())
+                        put("deviceId", android_id)
+                    }
+                )
+                viewModel.saveJurnal(jurnal)
+            }
         }
 
         viewModel.resultStatusSaveJurnal.observe(this) {

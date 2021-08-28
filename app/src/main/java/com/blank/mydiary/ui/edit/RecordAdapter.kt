@@ -26,6 +26,11 @@ class RecordAdapter(
     RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
 
     private val data = mutableListOf<String>()
+    private lateinit var listenerDelete: (Int, String) -> Unit
+
+    fun listenerDelete(listenerDelete: (Int, String) -> Unit) {
+        this.listenerDelete = listenerDelete
+    }
 
     fun addData(data: String) {
         this.data.add(data)
@@ -75,7 +80,7 @@ class RecordAdapter(
             this.fileName = fileName
             v.tvTitleAudio.text = "Audio ${position.plus(1)}"
 
-            if (online) {
+            if (online && !fileName.contains(v.root.context.packageName)) {
                 v.endTime.text = getDuration(fileName)
             } else {
                 v.endTime.text = getDuration(File(fileName))
@@ -83,6 +88,7 @@ class RecordAdapter(
 
             v.btnCloseAudio.setOnClickListener {
                 deleteRecord(position)
+                listenerDelete(position, fileName)
             }
 
             v.play.setOnClickListener {

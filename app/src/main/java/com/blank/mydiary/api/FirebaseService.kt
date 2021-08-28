@@ -10,7 +10,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import java.io.File
 import java.io.FileInputStream
-import java.util.*
 
 object FirebaseService {
     private val storage = FirebaseStorage.getInstance()
@@ -28,11 +27,15 @@ object FirebaseService {
     fun getAudio(fileName: String): Task<Uri> = storageRef.child(fileName)
         .downloadUrl
 
-    fun saveText(jurnal: SendJurnal): Task<Void> {
-        return dbFb().collection(jurnal.data["deviceId"].toString())
+    fun saveText(jurnal: SendJurnal): Task<Void> =
+        dbFb().collection(jurnal.data["deviceId"].toString())
             .document(jurnal.data["jurnalId"].toString())
             .set(jurnal.data)
-    }
+
+    fun editText(jurnal: SendJurnal): Task<Void> =
+        dbFb().collection(jurnal.data["deviceId"].toString())
+            .document(jurnal.data["jurnalId"].toString())
+            .update(jurnal.data)
 
     fun deleteData(jurnal: Jurnal): Task<Void> =
         dbFb().collection(jurnal.deviceId)

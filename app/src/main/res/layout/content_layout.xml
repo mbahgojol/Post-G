@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
-        android:text="Hi, Welcome to Post-G"
+        android:text="@string/welcome_home"
         android:textColor="@color/unguJurna"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
-        android:src="@drawable/ic_notif"
+        android:src="@drawable/ic_notif_badged"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
