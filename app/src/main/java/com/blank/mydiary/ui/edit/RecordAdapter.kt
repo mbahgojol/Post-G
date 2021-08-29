@@ -26,7 +26,7 @@ class RecordAdapter(
     RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
 
     private val data = mutableListOf<String>()
-    private lateinit var listenerDelete: (Int, String) -> Unit
+    private var listenerDelete: ((Int, String) -> Unit?)? = null
 
     fun listenerDelete(listenerDelete: (Int, String) -> Unit) {
         this.listenerDelete = listenerDelete
@@ -88,7 +88,7 @@ class RecordAdapter(
 
             v.btnCloseAudio.setOnClickListener {
                 deleteRecord(position)
-                listenerDelete(position, fileName)
+                listenerDelete?.invoke(position, fileName)
             }
 
             v.play.setOnClickListener {

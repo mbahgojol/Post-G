@@ -86,7 +86,10 @@ class SearchActivity : AppCompatActivity() {
                     val snapshot = it.data as QuerySnapshot
                     if (snapshot != null && !snapshot.isEmpty) {
                         val model = snapshot.toObjects<Jurnal>().toMutableList()
-                        val adapter = HomeAdapter(model)
+                        val match =
+                            model.filter { fil -> fil.title.contains(binding.etSearch.text.toString()) }
+
+                        val adapter = HomeAdapter(match as MutableList<Jurnal>)
                         adapter.setClickListener { jun ->
                             val jurnal = MyJurnal(
                                 jun.background,

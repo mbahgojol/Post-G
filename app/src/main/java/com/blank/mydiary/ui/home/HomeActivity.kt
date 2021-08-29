@@ -57,8 +57,6 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding.content.currentDate.text = formatter.format(date)
 
         mutableListOf(
-            binding.content.btnArrowLeft,
-            binding.content.btnArrowRight,
             binding.content.currentDate
         ).forEach {
             it.setOnClickListener {

@@ -10,9 +10,11 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.PRIORITY_MAX
 import androidx.core.content.ContextCompat
 import com.blank.mydiary.R
 import com.blank.mydiary.ui.home.HomeActivity
+import com.blank.mydiary.utils.AnalyticFirebase
 import java.util.*
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -21,9 +23,13 @@ class AlarmReceiver : BroadcastReceiver() {
         private const val ID_REPEATING = 101
     }
 
+    private var analytics: AnalyticFirebase? = null
+
     override fun onReceive(context: Context, intent: Intent) {
+        analytics = AnalyticFirebase(context)
         val title = context.getString(R.string.reminder_title_notif)
         val msg = intent.getStringExtra(EXTRA_MESSAGE) ?: ""
+        analytics?.isBroadcastActive()
         showAlarmNotif(context, title, msg)
     }
 
@@ -42,12 +48,20 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
         val pendingIntent = PendingIntent.getBroadcast(context, ID_REPEATING, intent, 0)
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }else{
+            alarmManager.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent
+            )
+        }
     }
 
     fun cancelAlarm(context: Context) {
@@ -87,6 +101,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setColor(ContextCompat.getColor(context, android.R.color.transparent))
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
             .setSound(alarmSound)
+            .setPriority(PRIORITY_MAX)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -105,6 +120,7 @@ class AlarmReceiver : BroadcastReceiver() {
         notificationIntent.flags = (Intent.FLAG_ACTIVITY_CLEAR_TOP
                 or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         notificationIntent.putExtra("notif", true)
+
         val intent = PendingIntent.getActivity(
             context, 0,
             notificationIntent, 0
@@ -114,5 +130,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val notification = builder.build()
         notificationManagerCompat.notify(ID_REPEATING, notification)
+
+        analytics?.isNotifShow(true)
     }
 }

@@ -1,5 +1,6 @@
 package com.blank.mydiary.utils
 
+import android.content.Context
 import android.content.res.Resources
 import android.media.MediaMetadataRetriever
 import android.provider.Settings
@@ -38,7 +39,7 @@ fun TextView.getFeelingStatus(code: Int) {
     text = emotes[code]
 }
 
-fun AppCompatActivity.getDeviceId(): String = Settings.Secure.getString(
+fun Context.getDeviceId(): String = Settings.Secure.getString(
     contentResolver,
     Settings.Secure.ANDROID_ID
 )
