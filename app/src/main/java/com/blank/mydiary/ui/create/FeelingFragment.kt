@@ -30,7 +30,11 @@ class FeelingFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         super.onViewCreated(view, savedInstanceState)
 
         val date = Date()
-        binding.currentDate.text = formatter.format(date)
+        if (requireActivity().intent.hasExtra("date")) {
+            binding.currentDate.text = requireActivity().intent.getStringExtra("date")
+        } else {
+            binding.currentDate.text = formatter.format(date)
+        }
 
         var feeling = 1
         val emotes = listOf(

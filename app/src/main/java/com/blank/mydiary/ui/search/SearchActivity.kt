@@ -87,7 +87,13 @@ class SearchActivity : AppCompatActivity() {
                     if (snapshot != null && !snapshot.isEmpty) {
                         val model = snapshot.toObjects<Jurnal>().toMutableList()
                         val match =
-                            model.filter { fil -> fil.title.contains(binding.etSearch.text.toString()) }
+                            model.filter { fil ->
+                                fil.title
+                                    .lowercase().contains(
+                                        binding.etSearch.text.toString()
+                                            .lowercase()
+                                    )
+                            }
 
                         val adapter = HomeAdapter(match as MutableList<Jurnal>)
                         adapter.setClickListener { jun ->

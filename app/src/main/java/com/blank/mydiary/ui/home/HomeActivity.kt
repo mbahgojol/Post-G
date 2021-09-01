@@ -18,6 +18,7 @@ import com.blank.mydiary.api.ResultState
 import com.blank.mydiary.data.Jurnal
 import com.blank.mydiary.data.MyJurnal
 import com.blank.mydiary.databinding.ActivityHomeBinding
+import com.blank.mydiary.service.AlarmReceiver
 import com.blank.mydiary.ui.create.CreateJurnalActivity
 import com.blank.mydiary.ui.edit.EditActivity
 import com.blank.mydiary.ui.search.SearchActivity
@@ -39,6 +40,10 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val alarmReceiver = AlarmReceiver()
+        if (!alarmReceiver.isAlarmOn(this))
+            alarmReceiver.setRepeatingAlarm(this)
 
         binding.content.notif.setOnClickListener {
             val popup = PopupWindow(this)
@@ -91,13 +96,8 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             true
         }
 
-        binding.fab.setOnClickListener {
-            Intent(this, CreateJurnalActivity::class.java).apply {
-                startActivity(this)
-            }
-        }
-
         mutableListOf(
+            binding.fab,
             binding.content.cardMood,
             binding.content.listEmote,
             binding.content.btnLove,
@@ -108,6 +108,7 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         ).forEach {
             it.setOnClickListener {
                 Intent(this, CreateJurnalActivity::class.java).apply {
+                    putExtra("date", binding.content.currentDate.text.toString())
                     startActivity(this)
                 }
             }
