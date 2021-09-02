@@ -41,10 +41,6 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val alarmReceiver = AlarmReceiver()
-        if (!alarmReceiver.isAlarmOn(this))
-            alarmReceiver.setRepeatingAlarm(this)
-
         binding.content.notif.setOnClickListener {
             val popup = PopupWindow(this)
             val layout = layoutInflater.inflate(R.layout.notif_popup_layout, null)
@@ -60,6 +56,7 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         val date = Date()
         binding.content.tvToday.text = formatter.format(date)
         binding.content.currentDate.text = formatter.format(date)
+        Log.e("DATE", formatter.format(date))
 
         mutableListOf(
             binding.content.currentDate
@@ -133,7 +130,7 @@ class HomeActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         }
 
         binding.content.pbhome.isVisible = true
-        fetchData(binding.content.tvToday.text.toString())
+        fetchData(formatter.format(date))
     }
 
     private fun fetchData(date: String) {

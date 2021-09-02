@@ -11,7 +11,7 @@ class SearchViewModel : ViewModel() {
     val resultStateSearch = MutableLiveData<ResultState>()
     val resultStateDeleteJurnal = MutableLiveData<ResultState>()
 
-    fun searchText(deviceId: String, text: String) {
+    fun searchText(deviceId: String) {
         resultStateSearch.value = ResultState.Loading(true)
         FirebaseService.getText(deviceId)
             .get()

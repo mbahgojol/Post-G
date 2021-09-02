@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blank.mydiary.api.FirebaseService
 import com.blank.mydiary.api.ResultState
 import com.blank.mydiary.data.Jurnal
 import com.blank.mydiary.data.MyJurnal
@@ -75,65 +76,58 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
-
-        viewModel.resultStateSearch.observe(this) {
-            when (it) {
-                is ResultState.Error -> {
-                    Toast.makeText(this, "${it.e.message}", Toast.LENGTH_SHORT).show()
-                }
-
-                is ResultState.Success<*> -> {
-                    val snapshot = it.data as QuerySnapshot
-                    if (snapshot != null && !snapshot.isEmpty) {
-                        val model = snapshot.toObjects<Jurnal>().toMutableList()
-                        val match =
-                            model.filter { fil ->
-                                fil.title
-                                    .lowercase().contains(
-                                        binding.etSearch.text.toString()
-                                            .lowercase()
-                                    )
-                            }
-
-                        val adapter = HomeAdapter(match as MutableList<Jurnal>)
-                        adapter.setClickListener { jun ->
-                            val jurnal = MyJurnal(
-                                jun.background,
-                                jun.date,
-                                jun.feeling,
-                                jun.fileName,
-                                jun.msg,
-                                jun.title,
-                                jun.jurnalId
-                            )
-                            Intent(this, EditActivity::class.java).apply {
-                                putExtra("jurnal", jurnal)
-                                startActivity(this)
-                            }
-                        }
-                        binding.rvSearch.adapter = adapter
-                        adapter.setClickDelete(viewModel::deleteJurnal)
-                        binding.wording.isVisible = true
-                    } else {
-                        val adapter = HomeAdapter(mutableListOf())
-                        adapter.isSearchPage = true
-                        binding.rvSearch.adapter = adapter
-                        binding.wording.isVisible = true
-                    }
-
-                    binding.pbSearch.isVisible = false
-                }
-
-                is ResultState.Loading -> {
-                    binding.pbSearch.isVisible = it.loading
-                }
-            }
-        }
     }
 
     private fun performSearch() {
+        binding.pbSearch.isVisible = true
         binding.rvSearch.isVisible = true
-        viewModel.searchText(getDeviceId(), binding.etSearch.text.toString())
+        FirebaseService.getText(getDeviceId())
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val model = snapshot.toObjects<Jurnal>().toMutableList()
+                    val match =
+                        model.filter { fil ->
+                            fil.title
+                                .lowercase().contains(
+                                    binding.etSearch.text.toString()
+                                        .lowercase()
+                                )
+                        }
+
+                    val adapter = HomeAdapter(match as MutableList<Jurnal>)
+                    adapter.setClickListener { jun ->
+                        val jurnal = MyJurnal(
+                            jun.background,
+                            jun.date,
+                            jun.feeling,
+                            jun.fileName,
+                            jun.msg,
+                            jun.title,
+                            jun.jurnalId
+                        )
+                        Intent(this, EditActivity::class.java).apply {
+                            putExtra("jurnal", jurnal)
+                            startActivity(this)
+                        }
+                    }
+                    binding.rvSearch.adapter = adapter
+                    adapter.setClickDelete(viewModel::deleteJurnal)
+                    binding.wording.isVisible = true
+                } else {
+                    val adapter = HomeAdapter(mutableListOf())
+                    adapter.isSearchPage = true
+                    binding.rvSearch.adapter = adapter
+                    binding.wording.isVisible = true
+                }
+
+                binding.pbSearch.isVisible = false
+            }
         binding.etSearch.clearFocus()
         val input: InputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
